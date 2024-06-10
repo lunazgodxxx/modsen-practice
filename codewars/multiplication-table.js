@@ -1,3 +1,7 @@
+/**
+ * Complete
+ */
+
 multiplicationTable = function(size) {
   const array = new Array(size);
   const initialValue = 0
