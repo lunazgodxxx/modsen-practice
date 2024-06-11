@@ -1,5 +1,5 @@
 /**
- * Complete
+ * Completed
  */
 
 multiplicationTable = function(size) {
