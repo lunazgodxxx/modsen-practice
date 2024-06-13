@@ -7,11 +7,13 @@ const fakeUsers = [
     id: 1,
     username: 'anton',
     password: 'password1',
+    role: 'user',
   },
   {
     id: 2,
     username: 'egor',
     password: 'password123',
+    role: 'admin',
   },
 ];
 
