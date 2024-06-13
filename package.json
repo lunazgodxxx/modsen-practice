@@ -34,6 +34,7 @@
     "@types/bcrypt": "^5.0.2",
     "@types/passport-jwt": "^4.0.1",
     "@types/passport-local": "^1.0.38",
+    "argon2": "^0.40.3",
     "bcrypt": "^5.1.1",
     "dotenv": "^16.4.5",
     "dotenv-cli": "^7.4.2",

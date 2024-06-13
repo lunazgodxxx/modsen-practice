@@ -3,6 +3,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { Role } from 'src/auth/interfaces/user.interface';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { User } from '@prisma/client';
+import { encrypt } from 'src/middleware/security';
 
 @Injectable()
 export class UserService {
@@ -20,14 +21,16 @@ export class UserService {
         throw new BadRequestException('Email or username already exists');
       }
 
+      const encryptedPassword = await encrypt(dto.password);
       const user = await this.prismaService.user.create({
         data: {
           email: dto.email,
           username: dto.username,
+          password: encryptedPassword,
           roles: [Role.Customer],
         },
       });
-
+      console.log(user);
       return user;
     } catch (e) {
       throw e;
