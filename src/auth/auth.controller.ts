@@ -19,9 +19,9 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post()
-  login(@Res() res, @Body() authenticateDto: AuthenticationDto) {
+  async login(@Res() res, @Body() authenticateDto: AuthenticationDto) {
     try {
-      const response = this.authService.authenticate(authenticateDto);
+      const response = await this.authService.authenticate(authenticateDto);
       return res.status(HttpStatus.OK).json({ response });
     } catch (error) {
       return res.status(error.status).json(error.response);
