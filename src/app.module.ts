@@ -17,12 +17,6 @@ import { JwtModule } from '@nestjs/jwt';
       isGlobal: true,
       prismaServiceOptions: {},
     }),
-    JwtModule.register({
-      secret: 'secret',
-      signOptions: {
-        expiresIn: '1h',
-      },
-    }),
   ],
   controllers: [AuthController],
   providers: [AuthService, JwtStrategy],
