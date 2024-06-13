@@ -24,6 +24,6 @@ export const verifyPassword = async (
 
     throw new BadRequestException('Invalid credentials');
   } catch (e) {
-    throw new InternalServerErrorException();
+    throw new InternalServerErrorException(e);
   }
 };

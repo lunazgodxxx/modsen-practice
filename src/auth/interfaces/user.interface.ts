@@ -1,16 +1,18 @@
+import { User } from '@prisma/client';
+
 export enum Role {
   Admin = 'admin',
   Customer = 'customer',
 }
 
-type User = {
+type UserResponse = {
   id: number;
-  userName: string;
-  password: string;
-  role: Role;
+  username: string;
+  email: string;
+  roles: string[];
 };
 
 export interface IAuthenticate {
-  readonly user: User;
+  readonly user: UserResponse;
   readonly token: string;
 }
