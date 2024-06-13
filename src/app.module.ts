@@ -8,6 +8,7 @@ import { PrismaModule } from 'nestjs-prisma';
   imports: [
     ConfigModule.forRoot({
       envFilePath: '.env.dev',
+      isGlobal: true,
     }),
     PrismaModule.forRoot({
       isGlobal: true,
