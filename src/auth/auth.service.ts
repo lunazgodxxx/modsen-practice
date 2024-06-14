@@ -1,10 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { faker } from '@faker-js/faker';
 import { sign } from 'jsonwebtoken';
-import { IAuthenticate, Role } from './interfaces/user.interface';
+import { IAuthenticate } from './interfaces/user.interface';
 import { AuthenticationDto } from './dto/auth.dto';
 import { PrismaService } from 'nestjs-prisma';
-import { User } from '@prisma/client';
 import { ConfigService } from '@nestjs/config';
 import { verifyPassword } from 'src/middleware/security';
 

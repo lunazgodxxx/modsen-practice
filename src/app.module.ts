@@ -1,18 +1,12 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { AuthModule } from './auth/auth.module';
 import { AuthService } from './auth/auth.service';
 import { JwtStrategy } from './auth/strategy/jwt.strategy';
 import { AuthController } from './auth/auth.controller';
-import { JwtModule } from '@nestjs/jwt';
 import { UserService } from './user/user.service';
 import { UserController } from './user/user.controller';
 import { PrismaService } from './prisma/prisma.service';
-import {
-  PrismaModule,
-  PrismaModuleOptions,
-  PrismaServiceOptions,
-} from 'nestjs-prisma';
+import { PrismaModule, PrismaServiceOptions } from 'nestjs-prisma';
 import { MeetupController } from './meetup/meetup.controller';
 import { MeetupService } from './meetup/meetup.service';
 @Module({
