@@ -13,6 +13,8 @@ import {
   PrismaModuleOptions,
   PrismaServiceOptions,
 } from 'nestjs-prisma';
+import { MeetupController } from './meetup/meetup.controller';
+import { MeetupService } from './meetup/meetup.service';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -31,7 +33,13 @@ import {
       }),
     }),
   ],
-  controllers: [AuthController, UserController],
-  providers: [AuthService, UserService, JwtStrategy, PrismaService],
+  controllers: [AuthController, UserController, MeetupController],
+  providers: [
+    AuthService,
+    UserService,
+    MeetupService,
+    JwtStrategy,
+    PrismaService,
+  ],
 })
 export class AppModule {}
