@@ -17,26 +17,26 @@ export class UserController {
   constructor(private userService: UserService) {}
 
   @Post()
-  async createUser(@Res() res, @Body() dto: CreateUserDto) {
-    await this.userService.createUser(dto);
+  async create(@Res() res, @Body() dto: CreateUserDto) {
+    await this.userService.create(dto);
     return res.status(HttpStatus.OK).json();
   }
 
   @Get()
-  async getAllUsers(@Res() res): Promise<User[]> {
-    const users = await this.userService.findAllUsers();
+  async findAll(@Res() res): Promise<User[]> {
+    const users = await this.userService.findAll();
     return res.status(HttpStatus.OK).json(users);
   }
 
   @Get(':id')
-  async getUserById(@Res() res, @Param('id') id: string): Promise<User> {
-    const user = await this.userService.findUserWithId(Number(id));
+  async find(@Res() res, @Param('id') id: string): Promise<User> {
+    const user = await this.userService.find(Number(id));
     return res.status(HttpStatus.OK).json(user);
   }
 
   @Delete(':id')
-  deleteUserById(@Res() res, @Param('id') id: string) {
-    this.userService.deleteUser(Number(id));
+  delete(@Res() res, @Param('id') id: string) {
+    this.userService.delete(Number(id));
     return res.status(HttpStatus.ACCEPTED);
   }
 }

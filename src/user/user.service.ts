@@ -9,7 +9,7 @@ import { encrypt } from 'src/middleware/security';
 export class UserService {
   constructor(private prismaService: PrismaService) {}
 
-  async createUser(dto: CreateUserDto): Promise<User> {
+  async create(dto: CreateUserDto): Promise<User> {
     try {
       const existingUser = await this.prismaService.user.findFirst({
         where: {
@@ -37,7 +37,7 @@ export class UserService {
     }
   }
 
-  deleteUser(id: number) {
+  delete(id: number) {
     this.prismaService.user.delete({
       where: {
         id: id,
@@ -45,7 +45,7 @@ export class UserService {
     });
   }
 
-  async findUserWithId(id: number): Promise<User> {
+  async find(id: number): Promise<User> {
     try {
       const user = await this.prismaService.user.findFirst({
         where: {
@@ -59,7 +59,7 @@ export class UserService {
     }
   }
 
-  async findAllUsers(): Promise<User[]> {
+  async findAll(): Promise<User[]> {
     try {
       const users = await this.prismaService.user.findMany();
       return users;
