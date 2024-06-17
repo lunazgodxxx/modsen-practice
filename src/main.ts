@@ -16,7 +16,8 @@ async function bootstrap() {
   const config = new DocumentBuilder()
     .setTitle('Meetup-meetings API')
     .setVersion('v1.0')
-    .addTag('meetup')
+    .addBearerAuth()
+    .addTag('meetup api-v1')
     .build();
 
   const doc = SwaggerModule.createDocument(app, config);

@@ -27,7 +27,7 @@ export class UserService {
           email: dto.email,
           username: dto.username,
           password: encryptedPassword,
-          roles: [Role.Customer],
+          roles: [Role.User],
         },
       });
       console.log(user);

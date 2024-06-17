@@ -7,11 +7,17 @@ import {
   Param,
   Post,
   Res,
+  UseGuards,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User } from '@prisma/client';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { Roles } from 'src/auth/decorators/roles.decorator';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { RoleGuard } from 'src/auth/guards/role.guard';
 
+@ApiTags('User')
 @Controller('user')
 export class UserController {
   constructor(private userService: UserService) {}
@@ -34,9 +40,12 @@ export class UserController {
     return res.status(HttpStatus.OK).json(user);
   }
 
+  @Roles('admin')
+  @UseGuards(JwtAuthGuard, RoleGuard)
+  @ApiBearerAuth()
   @Delete(':id')
-  delete(@Res() res, @Param('id') id: string) {
-    this.userService.delete(Number(id));
+  async delete(@Res() res, @Param('id') id: string) {
+    await this.userService.delete(Number(id));
     return res.status(HttpStatus.ACCEPTED);
   }
 }

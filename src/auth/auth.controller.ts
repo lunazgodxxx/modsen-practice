@@ -13,7 +13,9 @@ import { AuthenticationDto } from './dto/auth.dto';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { RoleGuard } from './guards/role.guard';
 import { Roles } from './decorators/roles.decorator';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
@@ -28,8 +30,9 @@ export class AuthController {
     }
   }
 
-  @Roles('customer')
+  @Roles('user')
   @UseGuards(JwtAuthGuard, RoleGuard)
+  @ApiBearerAuth()
   @Get()
   profile(@Req() req, @Res() res) {
     return res.status(HttpStatus.OK).json(req.user);
