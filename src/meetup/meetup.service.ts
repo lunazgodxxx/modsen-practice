@@ -4,9 +4,8 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { PrismaService } from 'nestjs-prisma';
-import { CreateMeetupDto } from './dto/create-meetup.dto';
-import { UpdateMeetupDto } from './dto/update-meetup.dto';
 import { Meeting } from '@prisma/client';
+import { CreateMeetupDto, UpdateMeetupDto } from './dto';
 
 @Injectable()
 export class MeetupService {

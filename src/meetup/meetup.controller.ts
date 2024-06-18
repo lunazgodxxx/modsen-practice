@@ -11,13 +11,11 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { MeetupService } from './meetup.service';
-import { CreateMeetupDto } from './dto/create-meetup.dto';
 import { Meeting } from '@prisma/client';
-import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
-import { RoleGuard } from 'src/auth/guards/role.guard';
-import { Roles } from 'src/auth/decorators/roles.decorator';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { UpdateMeetupDto } from './dto/update-meetup.dto';
+import { Roles } from 'src/auth/decorators';
+import { JwtAuthGuard, RoleGuard } from 'src/auth/guards';
+import { CreateMeetupDto, UpdateMeetupDto } from './dto';
 
 @ApiTags('Meetups')
 @Controller('meetup')

@@ -1,10 +1,14 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { sign } from 'jsonwebtoken';
-import { IAuthenticate } from './interfaces/user.interface';
-import { AuthenticationDto } from './dto/auth.dto';
 import { PrismaService } from 'nestjs-prisma';
 import { ConfigService } from '@nestjs/config';
-import { verifyPassword } from 'src/middleware/security';
+import { AuthenticationDto } from './dto';
+import { IAuthenticate } from './interfaces';
+import * as argon from 'argon2';
 
 @Injectable()
 export class AuthService {
@@ -13,17 +17,17 @@ export class AuthService {
     private configService: ConfigService,
   ) {}
 
-  async authenticate(
-    authenticateDto: AuthenticationDto,
-  ): Promise<IAuthenticate> {
+  async authenticate(dto: AuthenticationDto): Promise<IAuthenticate> {
     const user = await this.prismaService.user.findFirst({
       where: {
-        username: authenticateDto.username,
+        username: dto.username,
       },
     });
 
     if (!user) throw new NotFoundException('Invalid credentials');
-    await verifyPassword(user.password, authenticateDto.password);
+
+    const passwordMatches = await argon.verify(user.password, dto.password);
+    if (!passwordMatches) throw new ForbiddenException('Access Denied');
 
     const token = sign(
       { email: user.email, username: user.username, roles: user.roles },

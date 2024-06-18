@@ -1,14 +1,14 @@
 import {
   BadRequestException,
+  ForbiddenException,
   Injectable,
   InternalServerErrorException,
 } from '@nestjs/common';
 import { Role } from 'src/auth/interfaces/user.interface';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { User } from '@prisma/client';
-import { encrypt, verifyPassword } from 'src/middleware/security';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { CreateUserDto, UpdateUserDto } from './dto';
+import * as argon from 'argon2';
 
 @Injectable()
 export class UserService {
@@ -26,7 +26,7 @@ export class UserService {
         throw new BadRequestException('Email or username already exists');
       }
 
-      const encryptedPassword = await encrypt(dto.password);
+      const encryptedPassword = await argon.hash(dto.password);
       const user = await this.prismaService.user.create({
         data: {
           email: dto.email,
@@ -54,13 +54,13 @@ export class UserService {
         throw new BadRequestException('Email or username already exists');
       }
 
-      try {
-        await verifyPassword(existingUser.password, dto.oldPassword);
-      } catch (e) {
-        throw new BadRequestException('Invalid credentials');
-      }
+      const passwordMatches = await argon.verify(
+        existingUser.password,
+        dto.oldPassword,
+      );
+      if (!passwordMatches) throw new ForbiddenException('Access Denied');
 
-      const encryptedPassword = await encrypt(dto.newPassword);
+      const encryptedPassword = await argon.hash(dto.newPassword);
       const user = await this.prismaService.user.update({
         where: {
           id: id,

@@ -11,13 +11,11 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { UserService } from './user.service';
-import { CreateUserDto } from './dto/create-user.dto';
 import { User } from '@prisma/client';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { Roles } from 'src/auth/decorators/roles.decorator';
-import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
-import { RoleGuard } from 'src/auth/guards/role.guard';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { CreateUserDto, UpdateUserDto } from './dto';
+import { Roles } from 'src/auth/decorators';
+import { JwtAuthGuard, RoleGuard } from 'src/auth/guards';
 
 @ApiTags('User')
 @Controller('user')
@@ -46,8 +44,8 @@ export class UserController {
   @UseGuards(JwtAuthGuard, RoleGuard)
   @ApiBearerAuth()
   @Delete(':id')
-  async delete(@Res() res, @Param('id') id: string) {
-    await this.userService.delete(Number(id));
+  delete(@Res() res, @Param('id') id: string) {
+    this.userService.delete(Number(id));
     return res.status(HttpStatus.ACCEPTED);
   }
 
