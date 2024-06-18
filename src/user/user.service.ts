@@ -1,9 +1,14 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
+import {
+  BadRequestException,
+  Injectable,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { Role } from 'src/auth/interfaces/user.interface';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { User } from '@prisma/client';
-import { encrypt } from 'src/middleware/security';
+import { encrypt, verifyPassword } from 'src/middleware/security';
+import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UserService {
@@ -33,7 +38,42 @@ export class UserService {
       console.log(user);
       return user;
     } catch (e) {
-      throw e;
+      throw new InternalServerErrorException(e);
+    }
+  }
+
+  async update(dto: UpdateUserDto, id: number): Promise<User> {
+    try {
+      const existingUser = await this.prismaService.user.findFirst({
+        where: {
+          id: id,
+        },
+      });
+
+      if (!existingUser) {
+        throw new BadRequestException('Email or username already exists');
+      }
+
+      try {
+        await verifyPassword(existingUser.password, dto.oldPassword);
+      } catch (e) {
+        throw new BadRequestException('Invalid credentials');
+      }
+
+      const encryptedPassword = await encrypt(dto.newPassword);
+      const user = await this.prismaService.user.update({
+        where: {
+          id: id,
+        },
+        data: {
+          email: dto.email,
+          password: encryptedPassword,
+        },
+      });
+
+      return user;
+    } catch (e) {
+      throw new InternalServerErrorException(e);
     }
   }
 
@@ -55,7 +95,7 @@ export class UserService {
 
       return user;
     } catch (e) {
-      throw e;
+      throw new InternalServerErrorException(e);
     }
   }
 
@@ -64,7 +104,7 @@ export class UserService {
       const users = await this.prismaService.user.findMany();
       return users;
     } catch (e) {
-      throw e;
+      throw new InternalServerErrorException(e);
     }
   }
 }

@@ -6,6 +6,7 @@ import {
   HttpStatus,
   Param,
   Post,
+  Put,
   Res,
   UseGuards,
 } from '@nestjs/common';
@@ -16,6 +17,7 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { RoleGuard } from 'src/auth/guards/role.guard';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @ApiTags('User')
 @Controller('user')
@@ -47,5 +49,15 @@ export class UserController {
   async delete(@Res() res, @Param('id') id: string) {
     await this.userService.delete(Number(id));
     return res.status(HttpStatus.ACCEPTED);
+  }
+
+  @Put(':id')
+  async update(
+    @Res() res,
+    @Body() dto: UpdateUserDto,
+    @Param('id') id: string,
+  ): Promise<User> {
+    const user = await this.userService.update(dto, Number(id));
+    return res.status(HttpStatus.OK).json(user);
   }
 }
