@@ -10,31 +10,31 @@ import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 
 const registerAdmin = async (app: INestApplication<any>) => {
   const prismaService = app.get(PrismaService);
+  const configService = app.get(ConfigService);
 
   try {
     const sudoUser = await prismaService.user.findUnique({
       where: {
-        email: 'lunazgodxxx@modsen.com',
+        email: configService.get<string>('SUDO_EMAIL'),
       },
     });
 
     if (!sudoUser) {
-      /**
-       * change with env params
-       */
-      const adminpass = await argon.hash('admin');
-      await prismaService.user.create({
+      const adminpass = await argon.hash(
+        configService.get<string>('SUDO_PASSWORD'),
+      );
+      const user = await prismaService.user.create({
         data: {
           roles: [Role.Admin],
-          email: 'lunazgodxxx@mosen.com',
-          username: 'admin',
+          email: configService.get<string>('SUDO_EMAIL'),
+          username: configService.get<string>('SUDO_USERNAME'),
           password: adminpass,
         },
       });
 
-      Logger.debug('Created SUDO-user "lunazgodxxx@modsen.com"/"admin"');
+      Logger.debug(`Created SUDO-user ${user.email}/${user.username}`);
     } else {
-      Logger.debug('SUDO-user "lunazgodxxx@modsen.com"/"admin" already exists');
+      Logger.debug('SUDO-user already exists');
     }
   } catch (error) {
     if (
