@@ -15,6 +15,10 @@ export class MeetupService {
     /**
      * todo, add list of users email to notif them about meeting
      */
+
+    /**
+     * bug: on one api call, creates two instances of one meeting in table
+     */
     try {
       const meeting = await this.prismaService.meeting.create({
         data: {

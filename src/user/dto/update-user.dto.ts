@@ -1,10 +1,16 @@
 import { ApiProperty } from '@nestjs/swagger';
 
 export class UpdateUserDto {
-  @ApiProperty()
+  @ApiProperty({
+    default: 'yahormaksimchyk',
+  })
   readonly oldPassword: string;
-  @ApiProperty()
+  @ApiProperty({
+    default: 'newyahormaksimchyk',
+  })
   readonly newPassword: string;
-  @ApiProperty()
+  @ApiProperty({
+    default: 'lunazgodxxx@gmail.com',
+  })
   readonly email: string;
 }

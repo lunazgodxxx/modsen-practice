@@ -1,15 +1,33 @@
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateMeetupDto {
-  @ApiProperty()
+  @ApiProperty({
+    default: 'Daily',
+  })
   theme: string;
-  @ApiProperty()
+  @ApiProperty({
+    default: 'Daily standup',
+  })
   description: string;
-  @ApiProperty()
+  @ApiProperty({
+    default: [
+      'daily',
+      'standup',
+      'js',
+      'node.js',
+      'nest.js',
+      'express',
+      'modsen',
+    ],
+  })
   tags: string[];
 
-  @ApiProperty()
+  @ApiProperty({
+    default: 'online',
+  })
   place: string;
-  @ApiProperty()
+  @ApiProperty({
+    default: new Date(),
+  })
   time: Date;
 }

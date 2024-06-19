@@ -1,9 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
 
 export class AuthenticationDto {
-  @ApiProperty()
+  @ApiProperty({
+    default: 'Yahor',
+  })
   readonly username: string;
 
-  @ApiProperty()
+  @ApiProperty({
+    default: 'yahormaksimchyk',
+  })
   readonly password: string;
 }
