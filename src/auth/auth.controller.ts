@@ -13,6 +13,7 @@ import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { AuthenticationDto } from './dto';
 import { Roles } from './decorators';
 import { JwtAuthGuard, RoleGuard } from './guards';
+import { JoiPipe } from 'nestjs-joi';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -23,7 +24,7 @@ export class AuthController {
   @ApiOperation({
     summary: 'Login user, get JWT access token',
   })
-  async login(@Res() res, @Body() authenticateDto: AuthenticationDto) {
+  async login(@Res() res, @Body(JoiPipe) authenticateDto: AuthenticationDto) {
     try {
       const response = await this.authService.authenticate(authenticateDto);
       return res.status(HttpStatus.OK).json({ response });

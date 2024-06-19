@@ -16,6 +16,7 @@ import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Roles } from 'src/auth/decorators';
 import { JwtAuthGuard, RoleGuard } from 'src/auth/guards';
 import { CreateMeetupDto, UpdateMeetupDto } from './dto';
+import { JoiPipe } from 'nestjs-joi';
 
 @ApiTags('Meetups')
 @Controller('meetup')
@@ -29,7 +30,7 @@ export class MeetupController {
   @ApiOperation({
     summary: 'Register meetup',
   })
-  async create(@Res() res, @Body() createMeetupDto: CreateMeetupDto) {
+  async create(@Res() res, @Body(JoiPipe) createMeetupDto: CreateMeetupDto) {
     const created = await this.meetupService.create(createMeetupDto);
     return res.status(HttpStatus.OK).json(created);
   }
@@ -64,7 +65,7 @@ export class MeetupController {
   })
   async update(
     @Res() res,
-    @Body() dto: UpdateMeetupDto,
+    @Body(JoiPipe) dto: UpdateMeetupDto,
     @Param('id') id: string,
   ) {
     const meetup = await this.meetupService.update(dto, Number(id));

@@ -16,6 +16,7 @@ import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CreateUserDto, UpdateUserDto } from './dto';
 import { Roles } from 'src/auth/decorators';
 import { JwtAuthGuard, RoleGuard } from 'src/auth/guards';
+import { JoiPipe } from 'nestjs-joi';
 
 @ApiTags('User')
 @Controller('user')
@@ -26,7 +27,7 @@ export class UserController {
   @ApiOperation({
     summary: 'Register user into the system',
   })
-  async create(@Res() res, @Body() dto: CreateUserDto) {
+  async create(@Res() res, @Body(JoiPipe) dto: CreateUserDto) {
     await this.userService.create(dto);
     return res.status(HttpStatus.OK).json();
   }
@@ -70,7 +71,7 @@ export class UserController {
   })
   async update(
     @Res() res,
-    @Body() dto: UpdateUserDto,
+    @Body(JoiPipe) dto: UpdateUserDto,
     @Param('id') id: string,
   ): Promise<User> {
     const user = await this.userService.update(dto, Number(id));

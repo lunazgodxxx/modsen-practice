@@ -40,6 +40,7 @@
     "dotenv-cli": "^7.4.2",
     "faker": "^6.6.6",
     "joi": "^17.13.1",
+    "nestjs-joi": "^1.10.0",
     "nestjs-prisma": "^0.23.0",
     "passport": "^0.7.0",
     "passport-jwt": "^4.0.1",
