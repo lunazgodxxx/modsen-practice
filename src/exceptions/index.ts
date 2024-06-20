@@ -1,1 +1,1 @@
-export * from './forbidden.exception';
+export * from './access-denied.exception';
