@@ -9,6 +9,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { User } from '@prisma/client';
 import { CreateUserDto, UpdateUserDto } from './dto';
 import * as argon from 'argon2';
+import { AccessDeniedException } from 'src/exceptions';
 
 @Injectable()
 export class UserService {
@@ -58,7 +59,7 @@ export class UserService {
         existingUser.password,
         dto.oldPassword,
       );
-      if (!passwordMatches) throw new ForbiddenException('Access Denied');
+      if (!passwordMatches) throw new AccessDeniedException();
 
       const encryptedPassword = await argon.hash(dto.newPassword);
       const user = await this.prismaService.user.update({

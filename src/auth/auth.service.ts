@@ -9,6 +9,7 @@ import { ConfigService } from '@nestjs/config';
 import { AuthenticationDto } from './dto';
 import { IAuthenticate } from './interfaces';
 import * as argon from 'argon2';
+import { AccessDeniedException } from 'src/exceptions';
 
 @Injectable()
 export class AuthService {
@@ -27,7 +28,7 @@ export class AuthService {
     if (!user) throw new NotFoundException('Invalid credentials');
 
     const passwordMatches = await argon.verify(user.password, dto.password);
-    if (!passwordMatches) throw new ForbiddenException('Access Denied');
+    if (!passwordMatches) throw new AccessDeniedException();
 
     const token = sign(
       { email: user.email, username: user.username, roles: user.roles },
