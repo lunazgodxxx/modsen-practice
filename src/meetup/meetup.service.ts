@@ -52,10 +52,14 @@ export class MeetupService {
     }
   }
 
-  async findAll(): Promise<Meeting[]> {
+  async findAll(skip: number, take: number): Promise<Meeting[]> {
     try {
-      return await this.prismaService.meeting.findMany();
+      return await this.prismaService.meeting.findMany({
+        skip,
+        take,
+      });
     } catch (e) {
+      console.log(e);
       throw new InternalServerErrorException(e);
     }
   }

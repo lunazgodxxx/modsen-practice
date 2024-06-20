@@ -7,6 +7,7 @@ import {
   Param,
   Post,
   Put,
+  Query,
   Res,
   UseGuards,
 } from '@nestjs/common';
@@ -17,6 +18,7 @@ import { Roles } from 'src/auth/decorators';
 import { JwtAuthGuard, RoleGuard } from 'src/auth/guards';
 import { CreateMeetupDto, UpdateMeetupDto } from './dto';
 import { JoiPipe } from 'nestjs-joi';
+import { number } from 'joi';
 
 @ApiTags('Meetups')
 @Controller('meetup')
@@ -46,13 +48,17 @@ export class MeetupController {
 
   @Get()
   @ApiOperation({
-    summary: 'Get meetups users',
+    summary: 'Get meetings with offset pagination',
   })
-  /**
-   * Add pagination
-   */
-  async findAll(@Res() res): Promise<Meeting[]> {
-    const meetings = await this.meetupService.findAll();
+  async findAll(
+    @Res() res,
+    @Query('skip') skip: number = 1,
+    @Query('take') take: number = 10,
+  ): Promise<Meeting[]> {
+    const meetings = await this.meetupService.findAll(
+      Number(skip),
+      Number(take),
+    );
     return res.status(HttpStatus.OK).json(meetings);
   }
 

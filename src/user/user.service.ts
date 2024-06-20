@@ -99,9 +99,12 @@ export class UserService {
     }
   }
 
-  async findAll(): Promise<User[]> {
+  async findAll(skip: number, take: number): Promise<User[]> {
     try {
-      const users = await this.prismaService.user.findMany();
+      const users = await this.prismaService.user.findMany({
+        skip,
+        take,
+      });
       return users;
     } catch (e) {
       throw new InternalServerErrorException(e);

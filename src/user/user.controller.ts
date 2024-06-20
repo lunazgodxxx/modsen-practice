@@ -7,6 +7,7 @@ import {
   Param,
   Post,
   Put,
+  Query,
   Res,
   UseGuards,
 } from '@nestjs/common';
@@ -34,13 +35,14 @@ export class UserController {
 
   @Get()
   @ApiOperation({
-    summary: 'Get all users',
+    summary: 'Get all users with offset pagination',
   })
-  /**
-   * Add pagination
-   */
-  async findAll(@Res() res): Promise<User[]> {
-    const users = await this.userService.findAll();
+  async findAll(
+    @Res() res,
+    @Query('skip') skip: number = 1,
+    @Query('take') take: number = 10,
+  ): Promise<User[]> {
+    const users = await this.userService.findAll(skip, take);
     return res.status(HttpStatus.OK).json(users);
   }
 
