@@ -5,6 +5,7 @@ import {
   Get,
   HttpStatus,
   Param,
+  ParseIntPipe,
   Post,
   Put,
   Query,
@@ -41,8 +42,11 @@ export class MeetupController {
   @ApiOperation({
     summary: 'Get meetup with "id"',
   })
-  async find(@Res() res, @Param('id') id: string): Promise<Meeting> {
-    const meeting = await this.meetupService.find(Number(id));
+  async find(
+    @Res() res,
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<Meeting> {
+    const meeting = await this.meetupService.find(id);
     return res.status(HttpStatus.OK).json(meeting);
   }
 
@@ -52,13 +56,10 @@ export class MeetupController {
   })
   async findAll(
     @Res() res,
-    @Query('skip') skip: number = 1,
-    @Query('take') take: number = 10,
+    @Query('skip', ParseIntPipe) skip: number = 1,
+    @Query('take', ParseIntPipe) take: number = 10,
   ): Promise<Meeting[]> {
-    const meetings = await this.meetupService.findAll(
-      Number(skip),
-      Number(take),
-    );
+    const meetings = await this.meetupService.findAll(skip, take);
     return res.status(HttpStatus.OK).json(meetings);
   }
 
@@ -72,9 +73,9 @@ export class MeetupController {
   async update(
     @Res() res,
     @Body(JoiPipe) dto: UpdateMeetupDto,
-    @Param('id') id: string,
+    @Param('id', ParseIntPipe) id: number,
   ) {
-    const meetup = await this.meetupService.update(dto, Number(id));
+    const meetup = await this.meetupService.update(dto, id);
     return res.status(HttpStatus.OK).json(meetup);
   }
 
@@ -85,8 +86,8 @@ export class MeetupController {
   @ApiOperation({
     summary: 'Delete meetup with "id"',
   })
-  delete(@Res() res, @Param('id') id: string) {
-    this.meetupService.delete(Number(id));
+  delete(@Res() res, @Param('id', ParseIntPipe) id: number) {
+    this.meetupService.delete(id);
     return res.status(HttpStatus.OK).json();
   }
 }

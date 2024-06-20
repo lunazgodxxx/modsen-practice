@@ -18,6 +18,6 @@ export class UpdateUserDto {
   @ApiProperty({
     default: 'lunazgodxxx@gmail.com',
   })
-  @JoiSchema(Joi.string().required())
+  @JoiSchema(Joi.string().email().required())
   readonly email: string;
 }

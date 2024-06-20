@@ -5,6 +5,7 @@ import {
   Get,
   HttpStatus,
   Param,
+  ParseIntPipe,
   Post,
   Put,
   Query,
@@ -39,8 +40,8 @@ export class UserController {
   })
   async findAll(
     @Res() res,
-    @Query('skip') skip: number = 1,
-    @Query('take') take: number = 10,
+    @Query('skip', ParseIntPipe) skip: number = 1,
+    @Query('take', ParseIntPipe) take: number = 10,
   ): Promise<User[]> {
     const users = await this.userService.findAll(skip, take);
     return res.status(HttpStatus.OK).json(users);
@@ -50,8 +51,8 @@ export class UserController {
   @ApiOperation({
     summary: 'Get user with "id"',
   })
-  async find(@Res() res, @Param('id') id: string): Promise<User> {
-    const user = await this.userService.find(Number(id));
+  async find(@Res() res, @Param('id', ParseIntPipe) id: number): Promise<User> {
+    const user = await this.userService.find(id);
     return res.status(HttpStatus.OK).json(user);
   }
 
@@ -62,8 +63,8 @@ export class UserController {
   @ApiOperation({
     summary: 'Delete user with "id"',
   })
-  delete(@Res() res, @Param('id') id: string) {
-    this.userService.delete(Number(id));
+  delete(@Res() res, @Param('id', ParseIntPipe) id: number) {
+    this.userService.delete(id);
     return res.status(HttpStatus.ACCEPTED);
   }
 
@@ -74,9 +75,9 @@ export class UserController {
   async update(
     @Res() res,
     @Body(JoiPipe) dto: UpdateUserDto,
-    @Param('id') id: string,
+    @Param('id', ParseIntPipe) id: number,
   ): Promise<User> {
-    const user = await this.userService.update(dto, Number(id));
+    const user = await this.userService.update(dto, id);
     return res.status(HttpStatus.OK).json(user);
   }
 }
