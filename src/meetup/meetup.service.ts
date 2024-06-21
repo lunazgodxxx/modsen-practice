@@ -6,6 +6,7 @@ import {
 import { PrismaService } from 'nestjs-prisma';
 import { Meeting } from '@prisma/client';
 import { CreateMeetupDto, UpdateMeetupDto } from './dto';
+import { off } from 'process';
 
 @Injectable()
 export class MeetupService {
@@ -14,10 +15,6 @@ export class MeetupService {
   async create(dto: CreateMeetupDto) {
     /**
      * todo, add list of users email to notif them about meeting (nodemailer)
-     */
-
-    /**
-     * bug: on one api call, creates two instances of one meeting in table
      */
     try {
       const meeting = await this.prismaService.meeting.create({
@@ -52,11 +49,12 @@ export class MeetupService {
     }
   }
 
-  async findAll(skip: number, take: number): Promise<Meeting[]> {
+  async findAll(page: number, limit: number): Promise<Meeting[]> {
+    const offset = page * 200;
     try {
       return await this.prismaService.meeting.findMany({
-        skip,
-        take,
+        skip: offset,
+        take: limit,
       });
     } catch (e) {
       console.log(e);

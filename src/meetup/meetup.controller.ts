@@ -50,16 +50,19 @@ export class MeetupController {
     return res.status(HttpStatus.OK).json(meeting);
   }
 
+  /**
+   * fix: remove offset, change to pages come from frontend
+   */
   @Get()
   @ApiOperation({
     summary: 'Get meetings with offset pagination',
   })
   async findAll(
     @Res() res,
-    @Query('skip', ParseIntPipe) skip: number = 1,
-    @Query('take', ParseIntPipe) take: number = 10,
+    @Query('page', ParseIntPipe) page: number = 1,
+    @Query('limit', ParseIntPipe) limit: number = 10,
   ): Promise<Meeting[]> {
-    const meetings = await this.meetupService.findAll(skip, take);
+    const meetings = await this.meetupService.findAll(page, limit);
     return res.status(HttpStatus.OK).json(meetings);
   }
 

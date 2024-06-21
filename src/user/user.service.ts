@@ -111,11 +111,12 @@ export class UserService {
     }
   }
 
-  async findAll(skip: number, take: number): Promise<ReponseUserDto[]> {
+  async findAll(page: number, limit: number): Promise<ReponseUserDto[]> {
+    const offset = page * 200;
     try {
       const users = await this.prismaService.user.findMany({
-        skip,
-        take,
+        skip: offset,
+        take: limit,
         select: {
           password: false,
 
