@@ -40,7 +40,7 @@ export class UserController {
   })
   async findAll(
     @Res() res,
-    @Query('skip', ParseIntPipe) skip: number = 1,
+    @Query('skip', ParseIntPipe) skip: number = 1, // How to pass values by default?
     @Query('take', ParseIntPipe) take: number = 10,
   ): Promise<User[]> {
     const users = await this.userService.findAll(skip, take);

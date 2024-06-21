@@ -7,7 +7,7 @@ import {
 import { Role } from 'src/auth/interfaces/user.interface';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { User } from '@prisma/client';
-import { CreateUserDto, UpdateUserDto } from './dto';
+import { CreateUserDto, ReponseUserDto, UpdateUserDto } from './dto';
 import * as argon from 'argon2';
 import { AccessDeniedException } from 'src/exceptions';
 
@@ -86,11 +86,22 @@ export class UserService {
     });
   }
 
-  async find(id: number): Promise<User> {
+  async find(id: number): Promise<ReponseUserDto> {
     try {
       const user = await this.prismaService.user.findFirst({
         where: {
           id: id,
+        },
+        select: {
+          password: false,
+
+          id: true,
+          username: true,
+          email: true,
+          roles: true,
+
+          updatedAt: true,
+          createdAt: true,
         },
       });
 
@@ -100,11 +111,22 @@ export class UserService {
     }
   }
 
-  async findAll(skip: number, take: number): Promise<User[]> {
+  async findAll(skip: number, take: number): Promise<ReponseUserDto[]> {
     try {
       const users = await this.prismaService.user.findMany({
         skip,
         take,
+        select: {
+          password: false,
+
+          id: true,
+          username: true,
+          email: true,
+          roles: true,
+
+          updatedAt: true,
+          createdAt: true,
+        },
       });
       return users;
     } catch (e) {

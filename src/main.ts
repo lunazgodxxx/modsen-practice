@@ -65,11 +65,15 @@ async function bootstrap() {
     .build();
 
   const doc = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup(configService.get<string>('SWAGGER_UI_URL'), app, doc);
+  const swaggerURL = configService.get<string>('SWAGGER_UI_URL');
+  SwaggerModule.setup(swaggerURL, app, doc);
 
   registerAdmin(app);
   await app.listen(port, () => {
     Logger.debug(`Listen at http://localhost:${port}/${globalPrefix}`);
+    Logger.debug(
+      `Swagger-UI avialable on http://localhost:${port}/${swaggerURL}`,
+    );
   });
 }
 bootstrap();
