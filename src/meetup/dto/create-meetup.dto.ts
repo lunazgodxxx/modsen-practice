@@ -25,7 +25,7 @@ export class CreateMeetupDto {
       'modsen',
     ],
   })
-  @JoiSchema(Joi.object().required())
+  @JoiSchema(Joi.array().items(Joi.string()).required())
   tags: string[];
 
   @ApiProperty({

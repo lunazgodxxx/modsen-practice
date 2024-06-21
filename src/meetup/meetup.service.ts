@@ -13,7 +13,7 @@ export class MeetupService {
 
   async create(dto: CreateMeetupDto) {
     /**
-     * todo, add list of users email to notif them about meeting
+     * todo, add list of users email to notif them about meeting (nodemailer)
      */
 
     /**
