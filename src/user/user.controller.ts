@@ -3,22 +3,25 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
   HttpStatus,
   Param,
   ParseIntPipe,
   Post,
   Put,
   Query,
-  Res,
   UseGuards,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { User } from '@prisma/client';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { CreateUserDto, UpdateUserDto } from './dto';
+import { CreateUserDto, UpdateUserDto, ReponseUserDto } from './dto';
 import { Roles } from 'src/auth/decorators';
 import { JwtAuthGuard, RoleGuard } from 'src/auth/guards';
 import { JoiPipe } from 'nestjs-joi';
+import { FindAllPaginationDto } from './dto/findall-pagination.dto';
 
 @ApiTags('User')
 @Controller('user')
@@ -29,31 +32,36 @@ export class UserController {
   @ApiOperation({
     summary: 'Register user into the system',
   })
-  async create(@Res() res, @Body(JoiPipe) dto: CreateUserDto) {
+  @HttpCode(HttpStatus.CREATED)
+  async create(@Body(JoiPipe) dto: CreateUserDto) {
     await this.userService.create(dto);
-    return res.status(HttpStatus.OK).json();
   }
 
+  /**
+   * query dto, with deafult values
+   */
   @Get()
   @ApiOperation({
     summary: 'Get all users with offset pagination',
   })
+  @HttpCode(HttpStatus.OK)
+  @UsePipes(new ValidationPipe({ transform: true }))
   async findAll(
-    @Res() res,
-    @Query('page', ParseIntPipe) page: number = 1, // How to pass values by default?
-    @Query('limit', ParseIntPipe) limit: number = 10,
-  ): Promise<User[]> {
-    const users = await this.userService.findAll(page, limit);
-    return res.status(HttpStatus.OK).json(users);
+    @Query() pagination: FindAllPaginationDto,
+  ): Promise<ReponseUserDto[]> {
+    const users = await this.userService.findAll(0, 10);
+    console.log(pagination);
+    return users;
   }
 
   @Get(':id')
   @ApiOperation({
     summary: 'Get user with "id"',
   })
-  async find(@Res() res, @Param('id', ParseIntPipe) id: number): Promise<User> {
+  @HttpCode(HttpStatus.OK)
+  async find(@Param('id', ParseIntPipe) id: number): Promise<ReponseUserDto> {
     const user = await this.userService.find(id);
-    return res.status(HttpStatus.OK).json(user);
+    return user;
   }
 
   @Roles('admin')
@@ -63,21 +71,21 @@ export class UserController {
   @ApiOperation({
     summary: 'Delete user with "id"',
   })
-  delete(@Res() res, @Param('id', ParseIntPipe) id: number) {
+  @HttpCode(HttpStatus.ACCEPTED)
+  delete(@Param('id', ParseIntPipe) id: number) {
     this.userService.delete(id);
-    return res.status(HttpStatus.ACCEPTED);
   }
 
   @Put(':id')
   @ApiOperation({
     summary: 'Update user info',
   })
+  @HttpCode(HttpStatus.OK)
   async update(
-    @Res() res,
     @Body(JoiPipe) dto: UpdateUserDto,
     @Param('id', ParseIntPipe) id: number,
   ): Promise<User> {
     const user = await this.userService.update(dto, id);
-    return res.status(HttpStatus.OK).json(user);
+    return user;
   }
 }

@@ -3,13 +3,13 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
   HttpStatus,
   Param,
   ParseIntPipe,
   Post,
   Put,
   Query,
-  Res,
   UseGuards,
 } from '@nestjs/common';
 import { MeetupService } from './meetup.service';
@@ -19,7 +19,6 @@ import { Roles } from 'src/auth/decorators';
 import { JwtAuthGuard, RoleGuard } from 'src/auth/guards';
 import { CreateMeetupDto, UpdateMeetupDto } from './dto';
 import { JoiPipe } from 'nestjs-joi';
-import { number } from 'joi';
 
 @ApiTags('Meetups')
 @Controller('meetup')
@@ -33,21 +32,20 @@ export class MeetupController {
   @ApiOperation({
     summary: 'Register meetup',
   })
-  async create(@Res() res, @Body(JoiPipe) createMeetupDto: CreateMeetupDto) {
-    const created = await this.meetupService.create(createMeetupDto);
-    return res.status(HttpStatus.OK).json(created);
+  @HttpCode(HttpStatus.CREATED)
+  async create(@Body(JoiPipe) createMeetupDto: CreateMeetupDto) {
+    const meetup = await this.meetupService.create(createMeetupDto);
+    return meetup;
   }
 
   @Get(':id')
   @ApiOperation({
     summary: 'Get meetup with "id"',
   })
-  async find(
-    @Res() res,
-    @Param('id', ParseIntPipe) id: number,
-  ): Promise<Meeting> {
+  @HttpCode(HttpStatus.OK)
+  async find(@Param('id', ParseIntPipe) id: number): Promise<Meeting> {
     const meeting = await this.meetupService.find(id);
-    return res.status(HttpStatus.OK).json(meeting);
+    return meeting;
   }
 
   /**
@@ -57,13 +55,13 @@ export class MeetupController {
   @ApiOperation({
     summary: 'Get meetings with offset pagination',
   })
+  @HttpCode(HttpStatus.OK)
   async findAll(
-    @Res() res,
     @Query('page', ParseIntPipe) page: number = 1,
     @Query('limit', ParseIntPipe) limit: number = 10,
   ): Promise<Meeting[]> {
     const meetings = await this.meetupService.findAll(page, limit);
-    return res.status(HttpStatus.OK).json(meetings);
+    return meetings;
   }
 
   @Roles('admin')
@@ -73,13 +71,13 @@ export class MeetupController {
   @ApiOperation({
     summary: 'Update meetup information',
   })
+  @HttpCode(HttpStatus.OK)
   async update(
-    @Res() res,
     @Body(JoiPipe) dto: UpdateMeetupDto,
     @Param('id', ParseIntPipe) id: number,
-  ) {
+  ): Promise<Meeting> {
     const meetup = await this.meetupService.update(dto, id);
-    return res.status(HttpStatus.OK).json(meetup);
+    return meetup;
   }
 
   @Roles('admin')
@@ -89,8 +87,8 @@ export class MeetupController {
   @ApiOperation({
     summary: 'Delete meetup with "id"',
   })
-  delete(@Res() res, @Param('id', ParseIntPipe) id: number) {
+  @HttpCode(HttpStatus.ACCEPTED)
+  delete(@Param('id', ParseIntPipe) id: number) {
     this.meetupService.delete(id);
-    return res.status(HttpStatus.OK).json();
   }
 }

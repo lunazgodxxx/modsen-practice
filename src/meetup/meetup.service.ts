@@ -6,7 +6,6 @@ import {
 import { PrismaService } from 'nestjs-prisma';
 import { Meeting } from '@prisma/client';
 import { CreateMeetupDto, UpdateMeetupDto } from './dto';
-import { off } from 'process';
 
 @Injectable()
 export class MeetupService {
@@ -50,14 +49,13 @@ export class MeetupService {
   }
 
   async findAll(page: number, limit: number): Promise<Meeting[]> {
-    const offset = page * 200;
+    const offset = page * limit;
     try {
       return await this.prismaService.meeting.findMany({
         skip: offset,
         take: limit,
       });
     } catch (e) {
-      console.log(e);
       throw new InternalServerErrorException(e);
     }
   }

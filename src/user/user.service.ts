@@ -1,6 +1,5 @@
 import {
   BadRequestException,
-  ForbiddenException,
   Injectable,
   InternalServerErrorException,
 } from '@nestjs/common';
@@ -36,7 +35,6 @@ export class UserService {
           roles: [Role.User],
         },
       });
-      console.log(user);
       return user;
     } catch (e) {
       throw new InternalServerErrorException(e);

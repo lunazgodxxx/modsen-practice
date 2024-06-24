@@ -1,8 +1,4 @@
-import {
-  ForbiddenException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { sign } from 'jsonwebtoken';
 import { PrismaService } from 'nestjs-prisma';
 import { ConfigService } from '@nestjs/config';
@@ -30,6 +26,7 @@ export class AuthService {
     const passwordMatches = await argon.verify(user.password, dto.password);
     if (!passwordMatches) throw new AccessDeniedException();
 
+    // move to token service (RT + AT)
     const token = sign(
       { email: user.email, username: user.username, roles: user.roles },
       this.configService.get<string>('JWT_SECRET'),

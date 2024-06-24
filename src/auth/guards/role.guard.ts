@@ -5,8 +5,8 @@ import { Reflector } from '@nestjs/core';
 export class RoleGuard implements CanActivate {
   constructor(private reflector: Reflector) {}
 
-  matchRoles(roles: string[], userRole: string) {
-    return roles.some((role) => role == userRole);
+  matchRoles(roles: string[], userRole: string[]) {
+    return roles.some((el) => userRole.includes(el));
   }
 
   canActivate(context: ExecutionContext): boolean {
@@ -17,7 +17,6 @@ export class RoleGuard implements CanActivate {
     const request = context.switchToHttp().getRequest();
     const user = request.user;
 
-    console.log(this.matchRoles(roles, user.role));
     return this.matchRoles(roles, user.role);
   }
 }
