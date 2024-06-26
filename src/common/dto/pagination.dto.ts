@@ -8,7 +8,7 @@ export class FindAllPaginationDto {
   @JoiSchema(Joi.number().optional().positive())
   readonly limit?: number;
 
-  constructor(page: number = 1, limit: number = 10) {
+  constructor(page = 1, limit = 10) {
     this.limit = limit;
     this.page = page;
   }
