@@ -8,35 +8,44 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
+import { Request } from 'express';
+import { CreateUserDto } from 'src/users/dto/create-user.dto';
 import { AuthService } from './auth.service';
-import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { AuthenticationDto } from './dto';
-import { Roles } from './decorators';
-import { JwtAuthGuard, RoleGuard } from './guards';
-import { JoiPipe } from 'nestjs-joi';
+import { AuthDto } from './dto/auth.dto';
+import { AccessTokenGuard, RefreshTokenGuard, RoleGuard } from './guards';
+import { Roles } from 'src/common/decorators';
 
-@ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(private authService: AuthService) {}
 
-  @Post()
-  @ApiOperation({
-    summary: 'Login user, get JWT access token',
-  })
-  @HttpCode(HttpStatus.OK)
-  async login(@Body(JoiPipe) authenticateDto: AuthenticationDto) {
-    const response = await this.authService.authenticate(authenticateDto);
-    return response;
+  @Post('signup')
+  signup(@Body() createUserDto: CreateUserDto) {
+    return this.authService.signUp(createUserDto);
+  }
+
+  @Post('signin')
+  signin(@Body() data: AuthDto) {
+    return this.authService.signIn(data);
+  }
+
+  @UseGuards(AccessTokenGuard)
+  @Get('logout')
+  logout(@Req() req: Request) {
+    this.authService.logout(req.user['sub']);
+  }
+
+  @UseGuards(RefreshTokenGuard)
+  @Get('refresh')
+  refreshTokens(@Req() req: Request) {
+    const userId = req.user['sub'];
+    const refreshToken = req.user['refreshToken'];
+    return this.authService.refreshTokens(userId, refreshToken);
   }
 
   @Roles('user')
-  @UseGuards(JwtAuthGuard, RoleGuard)
-  @ApiBearerAuth()
+  @UseGuards(AccessTokenGuard, RoleGuard)
   @Get()
-  @ApiOperation({
-    summary: 'Test RBAC for "user" role',
-  })
   @HttpCode(HttpStatus.OK)
   profile(@Req() req) {
     return req.user;

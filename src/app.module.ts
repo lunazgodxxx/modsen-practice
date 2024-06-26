@@ -1,20 +1,19 @@
 import { Module } from '@nestjs/common';
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
+import { UsersModule } from './users/users.module';
+import { AuthModule } from './auth/auth.module';
+import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { AuthService } from './auth/auth.service';
-import { JwtStrategy } from './auth/strategy/jwt.strategy';
-import { AuthController } from './auth/auth.controller';
-import { UserService } from './user/user.service';
-import { UserController } from './user/user.controller';
-import { PrismaService } from './prisma/prisma.service';
-import { PrismaModule, PrismaServiceOptions } from 'nestjs-prisma';
-import { MeetupController } from './meetup/meetup.controller';
-import { MeetupService } from './meetup/meetup.service';
+import {
+  PrismaModule,
+  PrismaService,
+  PrismaServiceOptions,
+} from 'nestjs-prisma';
+
 @Module({
   imports: [
-    ConfigModule.forRoot({
-      envFilePath: '.env.dev',
-      isGlobal: true,
-    }),
+    ConfigModule.forRoot({ isGlobal: true }),
     PrismaModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -26,14 +25,10 @@ import { MeetupService } from './meetup/meetup.service';
         },
       }),
     }),
+    UsersModule,
+    AuthModule,
   ],
-  controllers: [AuthController, UserController, MeetupController],
-  providers: [
-    AuthService,
-    UserService,
-    MeetupService,
-    JwtStrategy,
-    PrismaService,
-  ],
+  controllers: [AppController],
+  providers: [AppService, PrismaService],
 })
 export class AppModule {}
