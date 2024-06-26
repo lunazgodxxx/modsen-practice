@@ -10,6 +10,7 @@ import {
   PrismaService,
   PrismaServiceOptions,
 } from 'nestjs-prisma';
+import { MeetingsModule } from './meetings/meetings.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import {
     }),
     UsersModule,
     AuthModule,
+    MeetingsModule,
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService],
